@@ -31,7 +31,7 @@ function publishToSubstack(post, sessionCookie) {
       headers: {
         'Content-Type': 'application/json',
         'Content-Length': Buffer.byteLength(data),
-        'Cookie': `connect.sid=${sessionCookie}`,
+        'Cookie': `substack.sid=${sessionCookie}`,
         'User-Agent': 'githubinflow-substack-bot'
       }
     };
