@@ -1,0 +1,16 @@
+name: Inflow Pipeline
+
+on:
+  push:
+    paths:
+      - 'content/incoming/**'
+
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Placeholder step
+        run: echo "Inflow pipeline initialized."
