@@ -1,6 +1,6 @@
 {
   "id": "001",
-  "title": "Test post from githubinflow (pw_testing)",
+  "title": "Test post from githubinflow (pw_testing_v1)",
   "content": "This is a test post published automatically from the githubinflow Substack pipeline.",
   "tags": ["test", "automation"],
   "status": "ready",
