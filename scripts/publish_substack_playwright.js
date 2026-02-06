@@ -10,8 +10,15 @@ async function main() {
   }
 
   const sessionCookie = process.env.SUBSTACK_SESSION;
+  const cfClearance = process.env.SUBSTACK_CF_CLEARANCE;
+
   if (!sessionCookie) {
     console.error('SUBSTACK_SESSION not set.');
+    process.exit(1);
+  }
+
+  if (!cfClearance) {
+    console.error('SUBSTACK_CF_CLEARANCE not set.');
     process.exit(1);
   }
 
@@ -24,6 +31,7 @@ async function main() {
   }
 
   const browser = await chromium.launch({ headless: true });
+
   const context = await browser.newContext({
     storageState: {
       cookies: [
@@ -33,6 +41,14 @@ async function main() {
           domain: 'saminthansivaji.substack.com',
           path: '/',
           httpOnly: true,
+          secure: true
+        },
+        {
+          name: 'cf_clearance',
+          value: cfClearance,
+          domain: 'saminthansivaji.substack.com',
+          path: '/',
+          httpOnly: false,
           secure: true
         }
       ],
@@ -48,7 +64,7 @@ async function main() {
   });
 
   console.log('Waiting for redirect to editor with post ID…');
-  await page.waitForURL(/\/publish\/post\/\d+/, { timeout: 30000 });
+  await page.waitForURL(/\/publish\/post\/\d+/, { timeout: 60000 });
 
   console.log('Waiting for title field…');
   await page.waitForSelector('input[placeholder="Title"]', { timeout: 30000 });
@@ -56,7 +72,6 @@ async function main() {
   console.log('Typing title…');
   await page.fill('input[placeholder="Title"]', post.title);
 
-  // Optional subtitle
   try {
     await page.fill('input[placeholder="Add a subtitle"]', post.subtitle || '');
   } catch (e) {
@@ -84,7 +99,6 @@ async function main() {
 
   await browser.close();
 
-  // Move file to processed
   const processedDir = path.join(path.dirname(path.dirname(absolutePath)), 'processed');
   if (!fs.existsSync(processedDir)) {
     fs.mkdirSync(processedDir, { recursive: true });
