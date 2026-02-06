@@ -1,0 +1,28 @@
+name: Substack Pipeline
+
+on:
+  push:
+    paths:
+      - 'content/substack/**'
+
+jobs:
+  publish-substack:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies (none yet, but future-proof)
+        run: npm init -y || true
+
+      - name: Publish to Substack
+        env:
+          SUBSTACK_SESSION: ${{ secrets.SUBSTACK_SESSION }}
+        run: |
+          node scripts/publish_substack.js content/substack/001.json
