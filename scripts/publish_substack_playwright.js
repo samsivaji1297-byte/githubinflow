@@ -42,24 +42,45 @@ async function main() {
 
   const page = await context.newPage();
 
-  console.log('Opening Substack…');
-  await page.goto('https://saminthansivaji.substack.com/publish/post');
+  console.log('Opening Substack editor…');
+  await page.goto('https://saminthansivaji.substack.com/publish/post', {
+    waitUntil: 'domcontentloaded'
+  });
 
-  console.log('Waiting for editor…');
-  await page.waitForSelector('[data-testid="editor"]', { timeout: 20000 });
+  console.log('Waiting for redirect to editor with post ID…');
+  await page.waitForURL(/\/publish\/post\/\d+/, { timeout: 30000 });
+
+  console.log('Waiting for title field…');
+  await page.waitForSelector('input[placeholder="Title"]', { timeout: 30000 });
 
   console.log('Typing title…');
   await page.fill('input[placeholder="Title"]', post.title);
 
+  // Optional subtitle
+  try {
+    await page.fill('input[placeholder="Add a subtitle"]', post.subtitle || '');
+  } catch (e) {
+    console.log('Subtitle field not found (this is fine).');
+  }
+
+  console.log('Waiting for body editor…');
+  await page.waitForSelector('div[contenteditable="true"]', { timeout: 30000 });
+
   console.log('Typing content…');
-  await page.click('[data-testid="editor"]');
+  await page.click('div[contenteditable="true"]');
   await page.keyboard.type(post.content, { delay: 5 });
 
-  console.log('Clicking Publish…');
-  await page.click('button:has-text("Publish")');
+  console.log('Clicking Continue…');
+  await page.click('button:has-text("Continue")');
 
-  console.log('Waiting for confirmation…');
-  await page.waitForTimeout(5000);
+  console.log('Waiting for publish modal…');
+  await page.waitForSelector('div[role="dialog"]', { timeout: 30000 });
+
+  console.log('Clicking Send to everyone now…');
+  await page.click('button:has-text("Send to everyone now")');
+
+  console.log('Waiting for publish confirmation…');
+  await page.waitForTimeout(8000);
 
   await browser.close();
 
