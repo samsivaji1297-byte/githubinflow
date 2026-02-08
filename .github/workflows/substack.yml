@@ -33,7 +33,7 @@ jobs:
           SUBSTACK_SID: ${{ secrets.SUBSTACK_SUBSTACK_SID }}
           SUBSTACK_LILI: ${{ secrets.SUBSTACK_SUBSTACK_LILI }}
         run: |
-          python substack_api/draft_create.py markup.txt
+          python substack_api/create_draft_from_markup.py markup.txt
 
       - name: Publish draft
         env:
