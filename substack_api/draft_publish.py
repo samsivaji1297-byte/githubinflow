@@ -27,15 +27,21 @@ for k, v in cookie_map.items():
 pub_url = os.getenv("PUBLICATION_URL")
 
 def get_drafts():
-    """Get all drafts"""
-    response = session.get(f"{pub_url}/api/v1/drafts")
-    if response.status_code == 200:
-        drafts = response.json()
-        print(f"Found {len(drafts)} drafts")
-        return drafts
-    else:
-        print(f"Error getting drafts: {response.text}")
+    url = "https://substack.com/api/v1/post"
+    headers = build_headers()
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code != 200:
+        print("Error fetching drafts:", response.text)
         return []
+
+    posts = response.json()
+
+    # Filter drafts only
+    drafts = [p for p in posts if p.get("type") == "draft"]
+
+    return drafts
 
 def get_unpublished_drafts():
     """Get only unpublished drafts for API"""
