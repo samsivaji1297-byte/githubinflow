@@ -26,7 +26,7 @@ jobs:
         run: |
           python convert_json_to_markup.py content/substack/001.json > markup.txt
 
-      - name: Create draft
+      - name: Create draft from markup
         env:
           PUBLICATION_URL: ${{ secrets.SUBSTACK_PUBLICATION_URL }}
           USER_ID: ${{ secrets.SUBSTACK_USER_ID }}
@@ -35,11 +35,16 @@ jobs:
         run: |
           python substack_api/create_draft_from_markup.py markup.txt
 
-      - name: Publish draft
+      - name: Load draft ID into env
+        run: |
+          echo "DRAFT_ID=$(cat draft_id.txt)" >> $GITHUB_ENV
+
+      - name: Publish draft by ID
         env:
           PUBLICATION_URL: ${{ secrets.SUBSTACK_PUBLICATION_URL }}
           USER_ID: ${{ secrets.SUBSTACK_USER_ID }}
           SUBSTACK_SID: ${{ secrets.SUBSTACK_SUBSTACK_SID }}
           SUBSTACK_LILI: ${{ secrets.SUBSTACK_SUBSTACK_LILI }}
+          DRAFT_ID: ${{ env.DRAFT_ID }}
         run: |
-          python substack_api/publish_latest_draft.py
+          python substack_api/publish_by_id.py "$DRAFT_ID"
