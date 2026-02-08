@@ -8,18 +8,28 @@ def convert(json_path):
     title = data.get("title", "").strip()
     content = data.get("content", "").strip()
 
-    # Build Substack markup
-    parts = []
+    # Build ProseMirror JSON structure
+    doc = {
+        "type": "doc",
+        "content": []
+    }
 
+    # Title as H1
     if title:
-        parts.append(f"Title:: {title}")
+        doc["content"].append({
+            "type": "heading",
+            "attrs": {"level": 1},
+            "content": [{"type": "text", "text": title}]
+        })
 
+    # Body text as paragraph
     if content:
-        parts.append(f"Text:: {content}")
+        doc["content"].append({
+            "type": "paragraph",
+            "content": [{"type": "text", "text": content}]
+        })
 
-    # Join with Substack's pipe separator
-    markup = " | ".join(parts)
-    return markup
+    return doc
 
 
 if __name__ == "__main__":
@@ -28,5 +38,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     json_path = sys.argv[1]
-    markup = convert(json_path)
-    print(markup)
+    markup_json = convert(json_path)
+
+    # Output ONLY valid JSON to stdout
+    print(json.dumps(markup_json, ensure_ascii=False))
