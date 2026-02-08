@@ -24,6 +24,17 @@ for k, v in cookie_map.items():
     if v:
         session.cookies.set(k, v, domain=".substack.com")
 
+# Build headers for internal API calls
+def build_headers():
+    return {
+        "User-Agent": "Mozilla/5.0",
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Cookie": f"substack.sid={os.getenv('SUBSTACK_SID')}; substack.lili={os.getenv('SUBSTACK_LILI')}",
+        "Referer": os.getenv("PUBLICATION_URL"),
+        "Origin": "https://substack.com",
+    }
+
 pub_url = os.getenv("PUBLICATION_URL")
 
 def get_drafts():
