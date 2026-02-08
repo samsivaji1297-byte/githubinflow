@@ -29,5 +29,6 @@ jobs:
       - name: Publish to Substack
         env:
           SUBSTACK_SESSION: ${{ secrets.SUBSTACK_SESSION }}
+          SUBSTACK_CF_CLEARANCE: ${{ secrets.SUBSTACK_CF_CLEARANCE }}
         run: |
           node scripts/publish_substack_playwright.js content/substack/001.json
