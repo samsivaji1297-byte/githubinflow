@@ -38,7 +38,7 @@ async function main() {
         {
           name: 'substack.sid',
           value: sessionCookie,
-          domain: 'saminthansivaji.substack.com',
+          domain: '.saminthansivaji.substack.com',
           path: '/',
           httpOnly: true,
           secure: true
@@ -46,7 +46,7 @@ async function main() {
         {
           name: 'cf_clearance',
           value: cfClearance,
-          domain: 'saminthansivaji.substack.com',
+          domain: '.saminthansivaji.substack.com',
           path: '/',
           httpOnly: false,
           secure: true
