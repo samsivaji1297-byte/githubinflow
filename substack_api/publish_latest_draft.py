@@ -1,7 +1,7 @@
 # substack_api/publish_latest_draft.py
 
 import sys
-from draft_publish import publish_draft, get_drafts
+from draft_publish import publish_draft, get_drafts, build_headers
 
 if __name__ == "__main__":
     print("=== SUBSTACK AUTO-PUBLISH ===")
